@@ -4,6 +4,9 @@
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 class UKF {
  public:
   /**
@@ -21,6 +24,23 @@ class UKF {
    * @param meas_package The latest measurement data of either radar or laser
    */
   void ProcessMeasurement(MeasurementPackage meas_package);
+
+  /**
+   * Create the augmentation matrix from the augmented state vector and
+   * augmented state covariance.
+   */
+  void SigmaPointsAugmentation(MatrixXd* Xsig_aug_out);
+
+  /**
+   * Predict the sigma points based on the process model using the
+   * augmented sigma points matrix.
+   */ 
+  void SigmaPointsPrediction(double delta_t, MatrixXd Xsig_aug, MatrixXd* Xsig_pred_out);
+
+  /**
+   * Predict the mean and covariance of the predicted sigma points.
+   */ 
+  void PredictMeanAndCovariance(VectorXd* x_out, MatrixXd* P_out);
 
   /**
    * Prediction Predicts sigma points, the state, and the state covariance
@@ -93,8 +113,23 @@ class UKF {
   // Augmented state dimension
   int n_aug_;
 
+  // Augmented sigma points amount:
+  int n_sig_aug_;
+
   // Sigma point spreading parameter
   double lambda_;
+
+  // Radar measurement noise covariance matrix:
+  MatrixXd R_radar_;
+
+  // Laser measurement noise covariance matrix:
+  MatrixXd R_laser_;
+
+  // NIS for radar:
+  double NIS_radar_;
+
+  // NIS for laser:
+  double NIS_laser_;
 };
 
 #endif  // UKF_H
