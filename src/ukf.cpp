@@ -125,8 +125,9 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       double vx = rho_d * cos(phi);
       double vy = rho_d * sin(phi);
       double v =  sqrt(vx*vx + vy*vy);
+      double vv = atan2(vx, vy);  // ADDED AS PER SUBMISSION FEEDBACK
 
-      x_.head(3) << x, y, v;
+      x_.head(3) << x, y, v, vv, 0;
     }
     else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
       cout << "UKF's first measurement (LASER):" << endl;
